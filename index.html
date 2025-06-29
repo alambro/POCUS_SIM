@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gyroscope Image Trigger</title>
+  <style>
+    body { text-align: center; margin-top: 100px; }
+    img { display: none; width: 300px; }
+  </style>
+</head>
+<body>
+
+<h1>Rotate Your Phone!</h1>
+<img id="triggerImage" src="POCUS_SIM/Cardio_Parasternal_Long_Axis.jpg" alt="Triggered Image">
+
+<script>
+  // Request permission for iOS devices
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
+      .then(permissionState => {
+        if (permissionState === 'granted') {
+          window.addEventListener('deviceorientation', handleOrientation);
+        }
+      })
+      .catch(console.error);
+  } else {
+    // Other devices (Android, etc.)
+    window.addEventListener('deviceorientation', handleOrientation);
+  }
+
+  function handleOrientation(event) {
+    const alpha = event.alpha; // Rotation around z-axis
+    const beta = event.beta;   // Rotation around x-axis (tilt front/back)
+    const gamma = event.gamma; // Rotation around y-axis (tilt left/right)
+
+    console.log(`Alpha: ${alpha}, Beta: ${beta}, Gamma: ${gamma}`);
+
+    // Example Condition: If phone is tilted forward beyond 45 degrees
+    if (beta > 45 && beta < 90) {
+      document.getElementById('triggerImage').style.display = 'block';
+    } else {
+      document.getElementById('triggerImage').style.display = 'none';
+    }
+  }
+</script>
+
+</body>
+</html>
